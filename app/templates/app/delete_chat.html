@@ -1,0 +1,12 @@
+{% extends 'app/base.html' %}
+
+{% block title %}チャット削除{% endblock %}
+
+{% block content %}
+    <h2>メッセージを削除</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">削除</button>
+    </form>
+    <a href="{% url 'chat' friend.id %}">キャンセル</a>
+{% endblock %}

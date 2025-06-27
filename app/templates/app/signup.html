@@ -1,0 +1,24 @@
+{% extends 'app/base.html' %}
+
+{% block title %}ユーザー登録{% endblock %}
+
+{% block content %}
+    <h2>📝 ユーザー登録</h2>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="ユーザー名"><br>
+        <input type="text" name="password" placeholder="パスワード"><br>
+        <button type="submit">登録</button>
+    </form>
+
+    <p><a href="{% url 'login' %}">ログインはこちら</a></p>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'app/base.html' %}
+
+{% block title %}友達申請一覧{% endblock %}
+
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message}}
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>📩 友達申請一覧</h2>
+    <ul>
+        {% for fr in requests %}
+            <li>
+                {{ fr.from_user.username }} からの申請
+                <a href="{% url 'approve_friend_request' fr.id %}">✅ 承認</a>
+            </li>
+        {% empty %}
+            <li>申請はありません。</li>
+        {% endfor %}
+    </ul>
+
+    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+{% endblock %}

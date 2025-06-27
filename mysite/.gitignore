@@ -1,0 +1,16 @@
+# Python
+*.pyc
+__pycache__/
+
+# Virtualenv
+.venv/
+.env
+
+# Django
+db.sqlite3
+/static/
+media/
+
+# VSCodeなどの設定
+.vscode/
+.idea/

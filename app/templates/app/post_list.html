@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+
+{% block title %}投稿一覧{% endblock %}
+
+{% block content %}
+    <h2>📋 投稿一覧</h2>
+
+    <p><a href="{% url 'post_create' %}">➕ 新しい投稿</a></p>
+
+    {% for post in posts %}
+        <div style="border: 1px solid #ccc; margin: 10px 0; padding: 10px;">
+            <p><strong>{{ post.author.username}}</strong>さんの投稿({{ post.created_at|date:'Y/m/d H:i' }})</p>
+            <p>{{ post.content|linebreaks }}</p>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" style="max-width: 300px;">
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>投稿はまだありません。</p>
+    {% endfor %}
+
+    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+{% endblock %}

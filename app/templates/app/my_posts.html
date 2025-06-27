@@ -1,0 +1,32 @@
+{% extends 'app/base.html' %}
+
+{% block title %}自分の投稿{% endblock %}
+
+{% block content %}
+    <h2>👤 {{ request.user.username }} さんの投稿一覧</h2>
+
+    <p><a href="{% url 'post_create' %}">➕ 新しい投稿</a></p>
+    <p><a href="{% url 'post_list' %}">🌐 全体の投稿一覧へ</a></p>
+
+    {% for post in posts %}
+        <div style="border: 1px solid #ccc; margin: 10px 0; padding: 10px;">
+            <p>{{ post.created_at|date:'Y/m/d H:i' }}</p>
+            <p>{{ post.content|linebreaks }}</p>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" style="max-width: 300px;">
+            {% endif %}
+
+            {% if post.author == request.user %}
+            <p>
+                <a href="{% url 'post_edit' post.pk %}">✏️ 編集</a>
+                |
+                <a href="{% url 'post_delete' post.pk %}" onclick="return confirm('本当に削除しますか？');">🗑️ 削除</a>
+            </p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>まだ投稿がありません。</p>
+    {% endfor %}
+
+    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+{% endblock %}

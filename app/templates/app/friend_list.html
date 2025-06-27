@@ -1,0 +1,22 @@
+{% extends 'app/base.html' %}
+
+{% block title %}友達一覧{% endblock %}
+
+{% block content %}
+    <h2>👫 友達一覧</h2>
+
+        {% if friends %}
+            <ul>
+                {% for friend in friends %}
+                    <li>
+                        {{ friend.username }}
+                        <a href="{% url 'chat' friend.id %}">>💬 チャット</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>まだ友達はいません。</p>
+        {% endif %}
+
+    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+{% endblock %}

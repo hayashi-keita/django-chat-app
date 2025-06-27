@@ -1,0 +1,21 @@
+{% extends 'app/base.html' %}
+
+{% block title %}ホーム{% endblock %}
+
+{% block content %}
+    <h2>🏠 トップページ</h2>
+    <p>ようこそ！{{ user.username }} さん</p>
+
+    <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'post_list' %}">投稿一覧</a></li>
+        <li class="list-group-item"><a href="{% url 'my_posts' %}">自分の投稿一覧</a></li>
+        <li class="list-group-item"><a href="{% url 'user_list' %}">ユーザー一覧</a></li>
+        <li class="list-group-item"><a href="{% url 'friend_list' %}">友達一覧 💬チャット</a>
+            {% if unread_count > 0 %}
+                <span style="color: red; font-weight: bold;">({{ unread_count}}件未読)</span>
+            {% endif %}
+        </li>
+        <li class="list-group-item"><a href="{% url 'friend_requests' %}">友達申請一覧</a></li>
+    </ul>
+    <p><a href="{% url 'logout' %}">ログアウト</a></p>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'app/base.html' %}
+
+{% block title %}新しい投稿{% endblock %}
+
+{% block content %}
+    <h2>📝 新しい投稿</h2>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        入力内容に誤りがあります。再確認してください。
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-primary">投稿する</button>
+    </form>
+
+    <p><a href="{% url 'post_list' %}">投稿一覧に戻る</a></p>
+{% endblock %}

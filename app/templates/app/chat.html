@@ -1,0 +1,94 @@
+{% extends 'app/base.html' %}
+
+{% block title %}チャット - {{ friend.username }}{% endblock %}
+
+{% block content %}
+<!-- ✅ ログインユーザー名をdata属性に追加 -->
+<!-- bodyの代わりにdivなどでdata属性渡す -->
+<div id="chat-container" data-username="{{ request.user.username }}">
+    <h2>💬 {{ friend.username }} さんとのチャット</h2>
+
+    <!-- ✅ チャット表示ボックス -->
+    <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll;">
+        {% for msg in messages %}
+            <p>
+                <strong>{{ msg.sender.username }}</strong>: {{ msg.message }}
+                <small>({{ msg.timestamp|date:'Y/m/d H:i' }})</small>
+
+                {% if msg.sender == request.user %}
+                    <!-- 編集・削除リンク -->
+                    <a href="{% url 'edit_chat' friend.id msg.id %}">✏️</a>
+                    <a href="{% url 'delete_chat' friend.id msg.id %}">🗑️</a>
+                {% endif %}
+                <!--自分が受信したメッセージかつ is_read=False のものに 「（未読）」 を表示-->
+                {% if msg.sender != request.user and not msg.is_read %}
+                    <span style="color: red;">（未読）</span>
+                {% endif %}
+            </p>
+        {% empty %}
+            <p>メッセージがまだありません。</p>
+        {% endfor %}
+    </div>
+
+    <!-- ✅ チャット送信フォーム -->
+    <form method="post" id="chat-form">
+        {% csrf_token %}
+        <textarea name="message" id="message-input" rows="3" cols="40" placeholder="メッセージを入力..."></textarea><br>
+        <button type="submit">送信</button>
+    </form>
+
+    <p><a href="{% url 'home' %}">🏠 ホームへ戻る</a></p>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- ✅ JavaScript（Ajax送信 & DOM操作） -->
+<script>
+    document.getElementById('chat-form').addEventListener('submit', function (e) {
+        e.preventDefault(); // ページリロードを防ぐ
+
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim(); // 空白除去
+        if (!message) return;
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const currentUsername = document.body.dataset.username;
+
+        fetch("{% url 'send_message_ajax' friend.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken
+            },
+            body: `message=${encodeURIComponent(message)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                const chatBox = document.getElementById('chat-box');
+                const newMessage = document.createElement('p');
+                newMessage.innerHTML = `<strong>${currentUsername}</strong>: ${message} <small>(今)</small>`;
+                chatBox.appendChild(newMessage);
+                messageInput.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } else {
+                alert('送信に失敗しました。');
+            }
+        });
+    });
+    // 🕒 新着メッセージ取得（5秒ごと）
+    setInterval(() => {
+        fetch("{% url 'get_messages_ajax' friend.id %}")
+        .then(response => response.json())
+        .then(data => {
+            const chatBox = document.getElementById('chat-box');
+            data.messages.forEach(msg => {
+                const newMessage = document.createElement('p');
+                newMessage.innerHTML = `<strong>${msg.sender}</strong>: ${msg.message} <small>(${msg.timestamp})</small>`;
+                chatBox.appendChild(newMessage);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        });
+    }, 5000);  // 5秒ごとに実行
+</script>
+{% endblock %}
