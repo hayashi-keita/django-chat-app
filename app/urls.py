@@ -22,5 +22,7 @@ urlpatterns = [
     path('chat/<int:user_id>/send/', views.send_message_ajax, name='send_message_ajax'),  # 非同期通信
     path('chat/<int:user_id>/messages/', views.get_messages_ajax, name='get_messages_ajax'),  # 未読既読
     path('chat/<int:user_id>/<int:message_id>/edit', views.edit_chat_message, name='edit_chat'),  # チャット編集
-    path('chat/<int:user_id>/<int:message_id>/delete', views.delete_chat_message, name='delete_chat')  # チャット削除
+    path('chat/<int:user_id>/<int:message_id>/delete', views.delete_chat_message, name='delete_chat'),  # チャット削除
+    path('dashboard/', views.dashboard_view, name='dashboard'),  #  ダッシュボードページ
+    path('events/', views.event_list_view, name='event_list'),  # イベントリストページ
 ]

@@ -1,0 +1,30 @@
+{% extends 'app/base.html' %}
+
+{% block title %}📊 ダッシュボード{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>📅 {{ today|date:'Y年n月' }}のイベント</h2>
+
+    <ul class="list-group-item my-3">
+        {% for event in events %}
+            <li class="list-group-item">
+                <strong>{{ event.date }}</strong> :{{ event.title }}
+                {%if event.description %}
+                    <br><small>{{ event.description }}</small>
+                {% endif %}
+            </li>
+        {% empty %}
+        <li class="list-group-item text-muted">今月のイベントはありません。</li>
+        {% endfor %}
+    </ul>
+
+    <h3>📝 イベント登録</h3>
+    <form method="post" class="my-3">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">登録</button>
+    </form>
+    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+</div>
+{% endblock %}

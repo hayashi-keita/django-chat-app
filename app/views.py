@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from .forms import PostForm
-from .models import Post, FriendshipRequest, ChatMessage
+from django.utils import timezone
+from .forms import PostForm, EventForm
+from .models import Post, FriendshipRequest, ChatMessage, Event
 
 # ホームページ
 # ブラウザからアクセスがあると Django がビュー関数を呼び出しrequest という名前の引数にアクセス情報が自動的に入ってくる
@@ -173,7 +173,20 @@ def friend_list(request):
     # 双方向に友達になっているユーザーを取得
     friends = list(set([fr.to_user for fr in sent] + [fr.from_user for fr in received]))
 
-    return render(request, 'app/friend_list.html', {'friends': friends})
+    # ✅ 各 friend に対して未読件数をカウント（辞書に格納）
+    unread_counts = {}
+    for friend in friends:
+        count = ChatMessage.objects.filter(
+            sender=friend,
+            receiver=user,
+            is_read=False,
+        ).count()
+        unread_counts[friend.id] = count
+
+    return render(request, 'app/friend_list.html', {
+        'friends': friends,
+        'unread_counts': unread_counts,
+        })
 
 # チャット画面の処理
 @login_required
@@ -238,12 +251,10 @@ def get_messages_ajax(request, user_id):
     data = []
     for msg in new_messages:
         data.append({
-            'sender': msg.sender.username,
+            'sender': '自分' if msg.sender.id == request.user.id else msg.sender.username,
             'message': msg.message,
             'timestamp': msg.timestamp.strftime('%Y/%m%d %H:%M'),
         })
-    # 既読にする
-    ChatMessage.objects.filter(id__in=[msg.id for msg in new_messages]).update(is_read=True)
 
     return JsonResponse({'messages': data})
 
@@ -277,3 +288,38 @@ def delete_chat_message(request, user_id, message_id):
         'message': message,
         'friend': get_object_or_404(User, id=user_id)
     })
+
+# イベント機能
+@login_required
+def dashboard_view(request):
+    today = timezone.now().date()
+    month = today.month
+    year = today.year
+
+    events = Event.objects.filter(
+        owner=request.user,
+        date__year=year,
+        date__month=month
+    ).order_by('date')
+
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.owner = request.user
+            event.save()
+            return redirect('dashboard')
+    else:
+        form = EventForm()
+
+    return render(request, 'app/dashboard.html', {
+        'form': form,
+        'events': events,
+        'today': today,
+    })
+
+# イベント一覧表示
+@login_required
+def event_list_view(request):
+    events = Event.objects.filter(owner=request.user).order_by('date')
+    return render(request, 'app/event_list.html', {'events': events})

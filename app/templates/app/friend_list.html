@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load dict_extras %}
 
 {% block title %}友達一覧{% endblock %}
 
@@ -6,17 +7,29 @@
     <h2>👫 友達一覧</h2>
 
         {% if friends %}
-            <ul>
+            <div class="row g-4">
                 {% for friend in friends %}
-                    <li>
-                        {{ friend.username }}
-                        <a href="{% url 'chat' friend.id %}">>💬 チャット</a>
-                    </li>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title">{{ friend.username }}</h5>
+                                    <p class="card-text">
+                                        ユーザーID: {{ friend.id }}<br>
+                                        {% with count=unread_counts|dict_get:friend.id %}
+                                            {% if count > 0 %}
+                                                <span class="badge bg-danger">未読 {{ count }}</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </p>
+                                <a href="{% url 'chat' friend.id %}" class="btn btn-sm btn-outline-primary mt-auto">💬 チャットする</a>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
             <p>まだ友達はいません。</p>
         {% endif %}
 
-    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+    <p class="mt-4"><a href="{% url 'home' %}" class="btn btn-secondary">🏠 ホームに戻る</a></p>
 {% endblock %}

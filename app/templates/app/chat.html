@@ -12,7 +12,7 @@
     <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll;">
         {% for msg in messages %}
             <p>
-                <strong>{{ msg.sender.username }}</strong>: {{ msg.message }}
+                <strong>{% if msg.sender == request.user %}自分{% else %}{{ msg.sender.username }}{% endif %}</strong>: {{ msg.message }}
                 <small>({{ msg.timestamp|date:'Y/m/d H:i' }})</small>
 
                 {% if msg.sender == request.user %}
@@ -52,7 +52,7 @@
         if (!message) return;
 
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const currentUsername = document.body.dataset.username;
+        const currentUsername = document.getElementById('chat-container').dataset.username;
 
         fetch("{% url 'send_message_ajax' friend.id %}", {
             method: 'POST',
@@ -67,7 +67,7 @@
             if (data.status === 'ok') {
                 const chatBox = document.getElementById('chat-box');
                 const newMessage = document.createElement('p');
-                newMessage.innerHTML = `<strong>${currentUsername}</strong>: ${message} <small>(今)</small>`;
+                newMessage.innerHTML = `<strong>自分</strong>: ${message} <small>(今)</small>`;
                 chatBox.appendChild(newMessage);
                 messageInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;

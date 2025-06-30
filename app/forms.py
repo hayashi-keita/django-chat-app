@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Event
 
 # ModelForm は「モデルと連動するフォーム」を意味
 class PostForm(forms.ModelForm):
@@ -14,4 +14,12 @@ class PostForm(forms.ModelForm):
         # content の入力欄は 4行のテキストエリア、入力欄の中に「内容を入力してください」と表示される（プレースホルダー）
         widgets = {
             'content': forms.Textarea(attrs={'rows': 4, 'placeholder': '内容を確認してください'}),
+        }
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'date']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
         }

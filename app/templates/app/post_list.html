@@ -3,21 +3,30 @@
 {% block title %}投稿一覧{% endblock %}
 
 {% block content %}
-    <h2>📋 投稿一覧</h2>
+    <h2 class="mb-4">📋 投稿一覧</h2>
 
-    <p><a href="{% url 'post_create' %}">➕ 新しい投稿</a></p>
+    <p><a href="{% url 'post_create' %}" class="btn btn-primary mb-3">➕ 新しい投稿</a></p>
 
+{% if posts %}
+<div class="row g-4">
     {% for post in posts %}
-        <div style="border: 1px solid #ccc; margin: 10px 0; padding: 10px;">
-            <p><strong>{{ post.author.username}}</strong>さんの投稿({{ post.created_at|date:'Y/m/d H:i' }})</p>
-            <p>{{ post.content|linebreaks }}</p>
-            {% if post.image %}
-                <img src="{{ post.image.url }}" style="max-width: 300px;">
-            {% endif %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top" style="max-height: 200px; object-fit: contain; width: 100%;">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ post.author.username}}さん</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ post.created_at|date:'Y/m/d H:i' }}</h6>
+                    <p class="card-text mt-2">{{ post.content|linebreaksbr|truncatechars:100 }}</p>
+                </div>
+            </div>
         </div>
-    {% empty %}
-        <p>投稿はまだありません。</p>
     {% endfor %}
+</div>
+{% else %}
+<p>投稿はまだありません。</p>
+{% endif %}
 
-    <p><a href="{% url 'home' %}">🏠 ホームに戻る</a></p>
+<p class="mt-4"><a href="{% url 'home' %}" class="btn btn-secondary">🏠 ホームに戻る</a></p>
 {% endblock %}

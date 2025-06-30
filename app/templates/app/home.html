@@ -3,19 +3,86 @@
 {% block title %}ホーム{% endblock %}
 
 {% block content %}
-    <h2>🏠 トップページ</h2>
-    <p>ようこそ！{{ user.username }} さん</p>
+<h2 class="mb-4">🏠 トップページ</h2>
+<p>ようこそ！<strong>{{ user.username }}</strong> さん</p>
+<p>以下メニューから選択してください。</p>
 
-    <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'post_list' %}">投稿一覧</a></li>
-        <li class="list-group-item"><a href="{% url 'my_posts' %}">自分の投稿一覧</a></li>
-        <li class="list-group-item"><a href="{% url 'user_list' %}">ユーザー一覧</a></li>
-        <li class="list-group-item"><a href="{% url 'friend_list' %}">友達一覧 💬チャット</a>
-            {% if unread_count > 0 %}
-                <span style="color: red; font-weight: bold;">({{ unread_count}}件未読)</span>
-            {% endif %}
-        </li>
-        <li class="list-group-item"><a href="{% url 'friend_requests' %}">友達申請一覧</a></li>
-    </ul>
-    <p><a href="{% url 'logout' %}">ログアウト</a></p>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">📋 投稿一覧</h5>
+                <p class="card-text">全員の投稿を閲覧できます。</p>
+                <a href="{% url 'post_list' %}" class="btn btn-primary mt-auto">見る</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">📝 自分の投稿</h5>
+                <p class="card-text">あなた自身の投稿を確認・編集しましょう。</p>
+                <a href="{% url 'my_posts' %}" class="btn btn-success mt-auto">見る</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">👥 ユーザー一覧</h5>
+                <p class="card-text">他のユーザーに友達申請ができます。</p>
+                <a href="{% url 'user_list' %}" class="btn btn-info mt-auto">見る</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">💬 友達チャット</h5>
+                <p class="card-text">友達とメッセージのやり取りができます。</p>
+                <a href="{% url 'friend_list' %}" class="btn btn-warning mt-auto">
+                    チャット
+                    {% if unread_count > 0 %}
+                        <span class="badge bg-danger ms-2">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">📩 友達申請</h5>
+                <p class="card-text">受け取った友達申請を承認できます。</p>
+                <a href="{% url 'friend_requests' %}" class="btn btn-secondary mt-auto">確認</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">📅 カレンダー</h5>
+                <p class="card-text">イベント登録ができます。</p>
+                <a href="{% url 'dashboard' %}" class="btn btn-danger mt-auto">登録</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">📅 イベント一覧</h5>
+                <p class="card-text">イベント一覧を確認ができます。</p>
+                <a href="{% url 'event_list' %}" class="btn btn-primary mt-auto">一覧</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}
