@@ -24,5 +24,7 @@ urlpatterns = [
     path('chat/<int:user_id>/<int:message_id>/edit', views.edit_chat_message, name='edit_chat'),  # チャット編集
     path('chat/<int:user_id>/<int:message_id>/delete', views.delete_chat_message, name='delete_chat'),  # チャット削除
     path('dashboard/', views.dashboard_view, name='dashboard'),  #  ダッシュボードページ
-    path('events/', views.event_list_view, name='event_list'),  # イベントリストページ
+    path('events/', views.event_list_view, name='event_list'),  # イベント一覧ページ
+    path('events/<int:pk>/edit/', views.edit_event_view, name='edit_event'),  #イベント編集ページ
+    path('events/<int:pk>/delete/', views.delete_event_view, name='delete_event')  # イベント削除
 ]

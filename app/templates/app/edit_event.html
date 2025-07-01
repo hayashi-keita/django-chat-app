@@ -1,0 +1,17 @@
+{% extends 'app/base.html' %}
+
+{% block title %}イベント編集{% endblock %}
+
+{%block content %}
+<div class="container mt-4">
+    <h2>✏️ イベント編集：{{ event.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">更新</button>
+    </form>
+    <div class="mt-2">
+        <a href="{% url 'dashboard' %}" >⬅ 戻る</a>
+    </div>
+</div>
+{% endblock %}

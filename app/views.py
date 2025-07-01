@@ -323,3 +323,29 @@ def dashboard_view(request):
 def event_list_view(request):
     events = Event.objects.filter(owner=request.user).order_by('date')
     return render(request, 'app/event_list.html', {'events': events})
+
+# イベント編集機能
+@login_required
+def edit_event_view(request, pk):
+    event = get_object_or_404(Event, id=pk, owner=request.user)
+
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = EventForm(instance=event)
+
+    return render(request, 'app/edit_event.html', {'form': form, 'event': event})
+
+# イベント削除機能
+@login_required
+def delete_event_view(request, pk):
+    event = get_object_or_404(Event, id=pk, owner=request.user)
+
+    if request.method == 'POST':
+        event.delete()
+        return redirect('dashboard')
+
+    return render(request, 'app/delete_event.html', {'event': event})

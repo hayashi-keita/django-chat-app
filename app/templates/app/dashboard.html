@@ -1,6 +1,6 @@
 {% extends 'app/base.html' %}
 
-{% block title %}📊 ダッシュボード{% endblock %}
+{% block title %}ダッシュボード{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
@@ -13,9 +13,11 @@
                 {%if event.description %}
                     <br><small>{{ event.description }}</small>
                 {% endif %}
+                <a href="{% url 'edit_event' event.id %}">✏️ 編集</a>
+                <a href="{% url 'delete_event' event.id %}">🗑️ 削除</a>
             </li>
         {% empty %}
-        <li class="list-group-item text-muted">今月のイベントはありません。</li>
+        <li class="list-group-item text-muted">今月のイベントがありません。</li>
         {% endfor %}
     </ul>
 
